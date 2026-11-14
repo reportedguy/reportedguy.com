@@ -1,0 +1,82 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Automating LinkedIn for free | Jatin Gupta</title><link rel="stylesheet" href="../assets/site.css"></head><body><main class="doc"><a class="back" href="../index.html">Back to the letter</a><p class="meta">Research report · 14 Nov 2026 · Status: testing from today</p>
+<h1>I automated my LinkedIn for free by merging three open-source projects</h1>
+<p class="lede">I compared the open-source and paid ways to run a LinkedIn account with AI, kept the best parts of two MIT skill bundles and Agent Reach, added a posting robot on LinkedIn's free official API, and start a one-week test today.</p>
+
+<h2>In short</h2>
+<ul>
+<li>li-stack is 16 Claude Code skills. It plans my week, writes every post, comment, reply and DM, checks each draft for AI tells, and posts approved posts on time.</li>
+<li>It costs nothing in tool fees. Posting uses LinkedIn's free "Share on LinkedIn" API. Reading uses Agent Reach, which is open source.</li>
+<li>No results yet. The test runs for one week from today: 7 posts, about 50 comments and 60 likes. I will publish the numbers.</li>
+</ul>
+
+<h2>Why I looked at this</h2>
+<p>My feed is full of AI slop, and I don't enjoy scrolling it. But I still want to reach founders and builders. So I wanted a system that does the slow parts for me and still sounds like me, not like the posts I'm tired of reading.</p>
+<p>My usual method: find every free and paid tool in a space, read how each one works, then combine the good parts into my own setup. That gets me most of what companies charge for, at close to zero cost.</p>
+
+<h2>The tools, compared</h2>
+<table>
+<thead><tr><th>Tool</th><th>What it does</th><th>Free or paid</th><th>Licence</th><th>What I took</th><th>What it lacks</th></tr></thead>
+<tbody>
+<tr><td>Jake Schincariol's linkedin-agent-skill</td><td>11 short Claude skills, including a humanizer</td><td>Free</td><td>MIT</td><td>The structure and the runnable humanizer scripts</td><td>No posting or reading. You paste everything.</td></tr>
+<tr><td>Serge Bulaev's linkedin-skills</td><td>12 skills with deeper research: hooks, feed notes, interviewer, thread monitor</td><td>Free, optional paid add-ons</td><td>MIT</td><td>The knowledge: hooks, Humanizer V3 rules, the interviewer</td><td>Reading and posting depend on Apify and Publora</td></tr>
+<tr><td>Publora</td><td>Publishing API for LinkedIn</td><td>Freemium (15 posts a month free, per Serge's README)</td><td>Proprietary</td><td>Nothing</td><td>A third party gets my account access. The official API does it free.</td></tr>
+<tr><td>Apify LinkedIn actors</td><td>Scrapers for posts, comments, engagers</td><td>Pay per result ($1 to $5 per 1,000)</td><td>Proprietary</td><td>Nothing. Agent Reach replaced it.</td><td>Ongoing cost</td></tr>
+<tr><td>Agent Reach</td><td>Open-source CLI that lets an agent read 16 platforms</td><td>Free</td><td>MIT</td><td>All LinkedIn reading</td><td>Reads as my logged-in account, which LinkedIn forbids</td></tr>
+<tr><td>Share on LinkedIn API</td><td>Official permission to post as yourself</td><td>Free</td><td>LinkedIn API terms</td><td>All posting, through my own script</td><td>Needs an app tied to a company Page</td></tr>
+<tr><td>Community Management API</td><td>Official likes and comments</td><td>Gated</td><td>LinkedIn API terms</td><td>Nothing</td><td>Only for registered organisations</td></tr>
+</tbody>
+</table>
+<p>I dropped the idea of a browser bot that clicks Like for me. It is the clearest breach of LinkedIn's rules. For price context: paid LinkedIn tools start at roughly $20 a month (AuthoredUp) and $39 a month (Taplio), going by their published pricing.</p>
+
+<h2>What I built</h2>
+<ol>
+<li><strong>Interview.</strong> <code>/li-interview</code> collects my real stories and numbers. A missing number stays a <code>{{my number}}</code> slot, never a guess.</li>
+<li><strong>Plan.</strong> <code>/li-plan</code> lays out 7 posts across 7 daily pillars I rebuilt for a founder voice, like Build Log and Startup Teardown.</li>
+<li><strong>Write.</strong> <code>/li-post</code> gives three hooks from a 40-hook library, one draft, and an image prompt when useful.</li>
+<li><strong>Humanize.</strong> <code>/li-human</code> runs two local scripts. A deliberately bad post scored 7.7 (flagged), a clean one 86.7 (pass).</li>
+<li><strong>Approve and publish.</strong> Nothing goes out until I type "approve". A Windows task checks the queue every 15 minutes and posts through the official API. <em>My own part.</em></li>
+<li><strong>Engage.</strong> <code>/li-monitor</code> and <code>/li-engagers</code> read through Agent Reach. Claude drafts comments. I click Like and paste them myself.</li>
+<li><strong>Audit.</strong> <code>/li-audit</code> ranks posts by engagement rate, not impressions, and feeds next week's plan.</li>
+</ol>
+<p>My own additions: the posting robot, the founder pillars, image prompts, auto-reshares (max one a day), the read cap and a 25-test suite. What broke: the humanizer crashed on the rupee sign because my Windows console uses cp1252, and <code>python3</code> on my PC is a Microsoft Store stub. Both are fixed.</p>
+
+<h2>What it replaces and what it costs</h2>
+<p>It replaces a scheduler, an AI writer, a post analytics tool and a scraper, with no extra tool fees. It runs on Claude Code on the Claude Pro plan, which I already pay for. So it is free to add, not free to run.</p>
+<p>It does not replace tools that auto-like and auto-connect. I chose not to copy that part. So it is not "touch nothing": I still spend about 10 minutes a day on likes and comments, plus approving each post.</p>
+
+<aside class="callout">
+<h2>Explained simply</h2>
+<p>Think of it as a small content team that lives on my laptop. Once a week it asks me what happened, plans seven posts, and writes them in my voice. A checker reads each draft and flags anything that sounds machine-written. I read every post and say yes or no. Approved posts go out on time through LinkedIn's own official door, the same way approved apps post. It also tells me who replied to me and which founders just posted, so I can respond while it matters. The parts LinkedIn does not allow software to do, like liking and commenting, I still do by hand.</p>
+</aside>
+
+<h2>The test, starting today</h2>
+<p>One week, from 14 Nov 2026. Before it started, I published a post saying this account is running an AI automation experiment. Every post is still read and approved by me.</p>
+<p>What I will measure, per post and for the week:</p>
+<ul>
+<li>Views and impressions per post across the test week.</li>
+<li>Reactions, comments and reshares, and engagement rate.</li>
+<li>Who engaged: how many are founders or builders.</li>
+<li>Replies from authors on my comments.</li>
+<li>Minutes I spent per day, and how many drafts I had to rewrite.</li>
+<li>Any warning or challenge page from LinkedIn.</li>
+</ul>
+<p>The risks, plainly. Posting through the official API is allowed. Reading through Agent Reach is not: it uses my logged-in session, and LinkedIn's User Agreement bans that. I limit it to 40 reads a day, never in bulk, and the rule is to stop at the first warning. That lowers the risk. It does not remove it. One thing is still unconfirmed: whether my posting token can also like or comment. LinkedIn's docs contradict each other, so I test it once on my own post. As of today, Agent Reach's LinkedIn login is not connected and that test has not run.</p>
+
+<h2>What I would test next</h2>
+<ul>
+<li>Run the humanizer on my old posts to find false positives.</li>
+<li>Posts with and without images, same pillar.</li>
+<li>After about 20 posts, swap the borrowed reach heuristics for my own data.</li>
+<li>7 posts a week against 4, on engagement rate.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li>My project files: li-stack README, shared/rules.md, skills/li-publish/SKILL.md, HANDOFF.md, and the build session notes.</li>
+<li>Jake Schincariol, linkedin-agent-skill: https://github.com/Jakeschincariol/linkedin-agent-skill (MIT)</li>
+<li>Serge Bulaev, linkedin-skills: https://github.com/sergebulaev/linkedin-skills (MIT). Publora and Apify pricing quoted from its README.</li>
+<li>Agent Reach: https://github.com/Panniantong/Agent-Reach (MIT)</li>
+<li>LinkedIn, Share on LinkedIn: https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin</li>
+<li>LinkedIn User Agreement: https://www.linkedin.com/legal/user-agreement</li>
+</ul>
+</main></body></html>

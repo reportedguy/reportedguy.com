@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Fine-tuning small models | Jatin Gupta</title><link rel="stylesheet" href="../assets/site.css"></head><body><main class="doc"><a class="back" href="../index.html">Back to the letter</a><p class="meta">Research report · 14 Nov 2026 · Status: in progress, two task types work today</p><h1>Fine-tuning small models for one business task, with Oumi and Kiln</h1><p class="lede">I tested two open-source fine-tuning tools, found the part neither of them automates, and built that part on top: a loop that trains a small model, sorts its mistakes, tries a fix and keeps it only if it wins.</p>
+
+<h2>In short</h2>
+<ul>
+<li>Oumi trains models well and Kiln organises tasks and data well. Neither, as far as I could find, runs the "find the mistakes, fix the data, retrain, keep only what wins" loop that a professional runs by hand.</li>
+<li>I built that loop. A small model trained on a laptop CPU sorted customer questions into 77 categories with 92.9% right (give or take 0.9), at about 7 milliseconds per answer.</li>
+<li>For pulling fields out of text, a 0.6B model I fine-tuned with Oumi scored 79.0% against 78.4% for my smaller default. That is too close to call, so the smaller model stays.</li>
+</ul>
+
+<h2>Why I looked at this</h2>
+<p>OpenAI's deprecations page says self-serve fine-tuning is now restricted. New organisations could not start jobs from May 2026, and existing customers cannot create new fine-tuning jobs after 6 January 2027. Old fine-tuned models keep working until their base model is retired.</p>
+<p>So teams that relied on a hosted fine-tune need another route. My question: can free, open tools give a non-technical team its own small model for one task, and tell it whether the model is good enough? My method: look at the free and paid tools, take the parts that work, build only what is missing.</p>
+
+<h2>The tools, compared</h2>
+<table>
+<thead><tr><th>Tool</th><th>What it does</th><th>Free or paid</th><th>Licence</th><th>Strong at</th><th>What it lacks</th></tr></thead>
+<tbody>
+<tr><td>Oumi</td><td>Trains, evaluates and serves open models from the command line with YAML configs</td><td>Free</td><td>Apache 2.0</td><td>Many training methods (SFT, LoRA, QLoRA, DPO, GRPO), runs on your own GPU or a cloud, data analysis, judges</td><td>No point-and-click interface. Marks itself as alpha. No loop that picks a fix from the error types</td></tr>
+<tr><td>Kiln</td><td>Desktop app and Python library for tasks, datasets, evals, synthetic data and fine-tuning</td><td>Free; Kiln Pro is a paid add-on</td><td>Library MIT; desktop app source-available, not open source</td><td>Fixed output shapes, data model for rated examples, easy hosted fine-tuning on 60+ models</td><td>Fine-tuning runs on hosted providers, not your own GPU. The AI Assistant, Auto-Optimize and Eval Builder are in paid Kiln Pro</td></tr>
+<tr><td>OpenAI fine-tuning API</td><td>Hosted fine-tuning of OpenAI models</td><td>Paid per token</td><td>Proprietary</td><td>No setup, no hardware</td><td>Closed to new jobs. You never hold the weights</td></tr>
+<tr><td>Fireworks, Together</td><td>Hosted fine-tuning of open models</td><td>Paid</td><td>Proprietary</td><td>Cheap serving of many variants</td><td>Data leaves your machine. You judge quality yourself</td></tr>
+</tbody>
+</table>
+
+<h2>What I tested</h2>
+<p>I cloned both projects and read their code and licence files. Then I ran them.</p>
+<ul>
+<li><strong>Kiln.</strong> I installed its core library (1.2.1) and stored 200 examples from MASSIVE, a public dataset of voice-assistant requests, as Kiln task runs with a fixed output shape. They read back correctly, and Kiln refused an answer that broke the shape.</li>
+<li><strong>Oumi.</strong> I ran <code>oumi train</code> and <code>oumi infer</code> (version 0.9) on a free Kaggle GPU. I fine-tuned Qwen3 0.6B on 11,514 examples for 3 passes, about an hour of GPU time.</li>
+</ul>
+<p>What broke:</p>
+<ul>
+<li>Installing Oumi on Kaggle replaced torch and broke the preinstalled torchaudio. My script removes it.</li>
+<li>My first full Oumi run scored 49.0%, but 913 of 2,033 answers were empty, and the log warned about right-padding on every batch. The PyPI release padded on the wrong side for this model; newer source had fixed it. I set left padding by hand. The rerun gave 79.0% with no empty answers.</li>
+<li>Earlier, one of my own runs scored 10%. That was my bug: fields that were absent were never declared. Fixed.</li>
+</ul>
+<p>I learned to distrust a score until I have looked at the raw answers.</p>
+
+<h2>What I built on top</h2>
+<p>The app is called Specialists. It runs on your own computer and has a web page with plain screens. The loop it runs:</p>
+<ol>
+<li>Check the data: repeats, the same text labelled two ways, values missing from their text, thin categories.</li>
+<li>Split it: 70 in 100 to learn from, 15 to tune on, 15 held back and used once at the end.</li>
+<li>Measure a plain baseline, so the model has something to beat.</li>
+<li>Train a small model.</li>
+<li>Sort the mistakes by kind, then try the matching fix: move the confidence cut-off, add marked synthetic examples for thin fields, or train longer.</li>
+<li>Keep a change only if it wins on the same examples by more than its margin of error.</li>
+<li>Report plainly: the score with its margin, what was tried, what mistakes remain.</li>
+</ol>
+<p>It also flags unsure answers for a person, suggests labels the data seems to lack, and can train on the user's own free Kaggle GPU and bring the model back (283 seconds end to end in a real run). 109 tests pass.</p>
+<p>What it adds that the tools lack: the decision loop itself, a "too close to call" verdict instead of a hopeful number, and training on hardware the user controls.</p>
+
+<aside class="callout">
+<h2>Explained simply</h2>
+<p>Big AI models are general. Many business jobs are narrow: put this email in the right queue, or pull the date out of this request. A small model trained on your own past examples can do one narrow job well, fast and cheaply, on your own computer. The hard part is not training. It is knowing whether the result is good and what to fix when it is not. Experts do that by hand. My tool does it for you: it trains, checks its mistakes, tries fixes, keeps only real gains, and tells you honestly whether it is good enough.</p>
+</aside>
+
+<h2>Who this is for</h2>
+<p>A company with a repeated, narrow task and a pile of past examples: tickets, forms, requests. A small model it owns cannot be switched off by a vendor, keeps data in-house, and answers in milliseconds. The catch is quality control, which is the part I automated.</p>
+<p>One honest finding: a cheap API given 20 similar examples per prompt scored 94.0% on 50 rows, which may match the trained model. Sometimes the right advice is "keep your API", and the app can say so.</p>
+
+<h2>What I would test next</h2>
+<ul>
+<li>Settle the API comparison on 300 rows instead of 50.</li>
+<li>Have the app run the larger Oumi model itself. Today it only writes the training folder.</li>
+<li>Below about 300 examples the app cannot tell a real gain from luck. Does synthetic data change that?</li>
+<li>A second dataset. All results so far are short English requests.</li>
+<li>Real users. Nobody outside me has tried it yet.</li>
+</ul>
+
+<h2>Sources</h2>
+<ul>
+<li><a href="https://github.com/oumi-ai/oumi">Oumi on GitHub</a></li>
+<li><a href="https://github.com/Kiln-AI/Kiln">Kiln on GitHub</a></li>
+<li><a href="https://developers.openai.com/api/docs/deprecations">OpenAI API deprecations</a></li>
+<li><a href="https://huggingface.co/datasets/PolyAI/banking77">Banking77 dataset</a></li>
+<li><a href="https://github.com/alexa/massive">MASSIVE dataset</a></li>
+<li>My project repository (private). Happy to walk through it.</li>
+</ul>
+</main></body></html>
