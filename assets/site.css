@@ -132,7 +132,7 @@ b, strong { font-weight: 600; }
 
 .pull { margin: 0; }
 .pull blockquote { margin: 0; padding: 0; }
-.pull blockquote p { font-size: clamp(1.75rem, 5vw, 2.35rem); line-height: 1.22; font-style: italic; font-weight: 400; letter-spacing: -0.01em; margin: 0 0 1rem; font-variation-settings: 'opsz' 72; text-wrap: balance; }
+.pull blockquote p { font-size: clamp(1.75rem, 5vw, 2.35rem); line-height: 1.3; font-style: italic; font-weight: 400; letter-spacing: -0.01em; margin: 0 0 1rem; font-variation-settings: 'opsz' 72; text-wrap: balance; }
 .pull blockquote p::before { content: '\201C'; margin-left: -0.45em; color: var(--ink-2); }
 .pull blockquote p::after { content: '\201D'; color: var(--ink-2); }
 .pull figcaption a { display: inline-block; font: 500 0.875rem/1.4 var(--mono); padding: 0.7rem 0; }
@@ -175,7 +175,7 @@ b, strong { font-weight: 600; }
 .doc { padding-top: 2rem; }
 .doc .back { display: inline-block; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); text-decoration-color: var(--rule); padding: 0.75rem 0; margin-bottom: 1.5rem; }
 .doc .back:hover { color: var(--ink); text-decoration-color: currentColor; }
-.doc .meta { text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); margin: 0 0 1rem; padding-top: 0.75rem; border-top: 1px solid var(--rule-strong); }
+.doc .meta { color: var(--ink-2); margin: 0 0 1rem; padding-top: 0.75rem; border-top: 1px solid var(--rule-strong); }
 .doc h1 { margin-bottom: 1rem; font-variation-settings: 'opsz' 72; }
 .doc .lede { font-size: 1.3rem; line-height: 1.5; font-style: italic; color: var(--ink-2); margin-bottom: 1.5rem; }
 .doc h2 { margin: 3rem 0 0.75rem; font-size: clamp(1.4rem, 3.5vw, 1.65rem); }
@@ -184,7 +184,7 @@ b, strong { font-weight: 600; }
 .doc li::marker { color: var(--ink-2); }
 .doc blockquote { margin: 1.5rem 0; padding: 0 0 0 1.25rem; border-left: 1px solid var(--rule-strong); font-style: italic; font-size: 1.2rem; line-height: 1.5; }
 .doc blockquote p:last-child { margin-bottom: 0; }
-.doc code { font: 0.85em var(--mono); background: var(--sheet); border: 1px solid var(--rule); padding: 0 0.3em; border-radius: 2px; }
+.doc code { font: 0.85em var(--mono); background: var(--sheet); border: 1px solid var(--rule); padding: 0.1em 0.4em; border-radius: 2px; }
 .doc aside.callout { background: var(--sheet); border: 1px solid var(--rule); padding: 1rem 1.25rem; margin: 1.75rem 0; font-size: 1rem; }
 .doc aside.callout > :last-child { margin-bottom: 0; }
 .doc figure { margin: 1.75rem 0; }
