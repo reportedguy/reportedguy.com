@@ -139,17 +139,22 @@ p { margin: 0 0 16px; }
 .doc figure { margin: 24px 0; }
 .doc figcaption { font: 12px/1.5 var(--mono); color: var(--quiet); margin-top: 8px; }
 
-/* tables scroll sideways on phones instead of breaking the page */
+/* tables show in full: wider than the text column on big screens, stacked rows on small ones */
 .doc table {
-  display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
-  border-collapse: collapse; margin: 20px 0 24px; font-size: 14px; line-height: 1.45;
+  width: min(1040px, calc(100vw - 40px)); margin: 28px 0 28px 50%; transform: translateX(-50%);
+  border-collapse: collapse; table-layout: fixed; font-size: 14px; line-height: 1.5;
 }
-.doc th, .doc td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); min-width: 150px; }
-.doc th { font: 12px/1.4 var(--mono); color: var(--ink-2); background: var(--tray-2); border-bottom-color: var(--ink); white-space: nowrap; }
-
-.links { list-style: none; padding: 0 !important; }
-.links li { margin-bottom: 10px; }
-
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.doc th { font: 12px/1.4 var(--mono); color: var(--ink-2); background: var(--tray-2); border-bottom-color: var(--ink); }
+@media (max-width: 760px) {
+  .doc table { width: 100%; margin: 24px 0; transform: none; font-size: 15px; }
+  .doc thead { display: none; }
+  .doc tr { display: block; padding: 12px 0; border-bottom: 1px solid var(--ink); }
+  .doc td { display: block; padding: 4px 0; border: 0; }
+  .doc td::before { content: attr(data-label); display: block; font: 11px/1.6 var(--mono); color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; }
+  .doc td:first-child { font-weight: 600; font-size: 17px; }
+  .doc td:first-child::before { display: none; }
+}
 @media (max-width: 480px) {
   body { font-size: 16px; }
   h2 { font-size: 20px; }
@@ -164,3 +169,6 @@ p { margin: 0 0 16px; }
 .letter-body p { font: 500 23px/36px 'Caveat', cursive; letter-spacing: 0; color: #1c2a4a; margin: 0 0 36px; }
 .letter .sign { font: 700 30px/36px 'Caveat', cursive; color: #1c2a4a; margin: -36px 0 0; }
 @media (max-width: 480px) { .letter { padding: 22px 16px 18px; transform: none; } .letter-body p { font-size: 21px; } }
+
+.links { list-style: none; padding: 0 !important; }
+.links li { margin-bottom: 10px; }
