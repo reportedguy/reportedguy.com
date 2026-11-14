@@ -158,3 +158,9 @@ p { margin: 0 0 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+
+/* ---------- handwritten letter ---------- */
+.letter { background: #fffdf5 linear-gradient(transparent 35px, #e9e4d4 36px) 0 14px / 100% 36px; border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--shadow-card, 0 5px 20px rgba(0,0,0,.08)); padding: 22px 26px 18px; transform: rotate(-0.4deg); }
+.letter-body p { font: 500 23px/36px 'Caveat', cursive; letter-spacing: 0; color: #1c2a4a; margin: 0 0 36px; }
+.letter .sign { font: 700 30px/36px 'Caveat', cursive; color: #1c2a4a; margin: -36px 0 0; }
+@media (max-width: 480px) { .letter { padding: 22px 16px 18px; transform: none; } .letter-body p { font-size: 21px; } }
